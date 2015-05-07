@@ -10,6 +10,9 @@ import assert = require('assert');
 describe('deep-readdir', function(){
 	it('should return an array', function(){
 		assert( Array.isArray( rdr('test/mocks/onlyfiles/') ) );
+        assert(Array.isArray(rdr('test/mocks/empty/')));
+        assert.equal(rdr('test/mocks/empty/').length, 0);
+
 	});
 
 	it('should throw an error if first argument is not a directory', function(){
@@ -21,7 +24,6 @@ describe('deep-readdir', function(){
 		assert.equal(rdr('test/mocks/onlyfiles/').length, 5);
 		assert.equal(rdr('test/mocks/onlyfiles').length, 5);
 		assert.equal(rdr('test/mocks/subs').length, 6);
-		assert.equal(rdr('test/mocks/symlinks').length, 8);
 	});
 
 	it('should call a callback (if provided) with results', function(done){
@@ -51,9 +53,9 @@ describe('deep-readdir', function(){
 			}
 		});
 
-		rdr('test/mocks/symlinks', function(result){
+		rdr('test/mocks/empty', function(result){
 			promises--;
-			assert.equal(result.length, 8);
+			assert.equal(result.length, 0);
 			if (promises === 0) {
 				done();
 			}
