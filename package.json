@@ -12,6 +12,7 @@
     "recursive"
   ],
   "scripts": {
+	"watch": "tsc -w",
     "build": "tsc",
     "jshint": "jshint index.js test/index.js",
     "pretest": "npm run build && npm run jshint",

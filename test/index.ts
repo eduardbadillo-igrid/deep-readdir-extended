@@ -10,8 +10,7 @@ import assert = require('assert');
 describe('deep-readdir', function(){
 	it('should return an array', function(){
 		assert( Array.isArray( rdr('test/mocks/onlyfiles/') ) );
-        assert(Array.isArray(rdr('test/mocks/empty/')));
-        assert.equal(rdr('test/mocks/empty/').length, 0);
+		assert(Array.isArray(rdr('test/mocks/empty/')));
 
 	});
 
@@ -55,7 +54,7 @@ describe('deep-readdir', function(){
 
 		rdr('test/mocks/empty', function(result){
 			promises--;
-			assert.equal(result.length, 0);
+			assert(Array.isArray(result));
 			if (promises === 0) {
 				done();
 			}
