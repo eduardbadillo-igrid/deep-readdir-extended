@@ -1,3 +1,9 @@
+// This is a hack cause Typescript 1.0.5-beta borked its definitions
+declare var DataView: Function;
+declare var Map: Function;
+declare var Set: Function;
+declare var WeakMap: Function;
+
 // Type definitions for Node.js v0.12.0
 // Project: http://nodejs.org/
 // Definitions by: Microsoft TypeScript <http://typescriptlang.org>, DefinitelyTyped <https://github.com/borisyankov/DefinitelyTyped>

@@ -12,8 +12,9 @@
     "recursive"
   ],
   "scripts": {
+		"build": "tsc",
 		"jshint": "jshint index.js test/index.js",
-		"pretest": "npm run jshint",
+		"pretest": "npm run build && npm run jshint",
 		"test": "mocha"
   },
   "author": "fedemp",
