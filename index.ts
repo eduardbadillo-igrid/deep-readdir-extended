@@ -14,10 +14,10 @@ function deepReaddir(dir, cb?): any {
 		try {
 			stats = fs.statSync(dir);
 		} catch (e) {
-			throw new Error('Argument is not a directory');
+			throw e;
 		}
 		if (!stats.isDirectory()) {
-			throw new Error('Argument is not a directory');
+			throw new Error('Node '+dir+' exists but it\'s not a directory');
 		}
 	} else {
 		throw new Error('Missing dir argument');
