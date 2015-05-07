@@ -1,6 +1,6 @@
 {
   "name": "deep-readdir",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "List files in directory recursively",
   "main": "index.js",
   "repository": {
@@ -12,10 +12,10 @@
     "recursive"
   ],
   "scripts": {
-		"build": "tsc",
-		"jshint": "jshint index.js test/index.js",
-		"pretest": "npm run build && npm run jshint",
-		"test": "mocha"
+    "build": "tsc",
+    "jshint": "jshint index.js test/index.js",
+    "pretest": "npm run build && npm run jshint",
+    "test": "mocha"
   },
   "author": "fedemp",
   "license": "MIT",
