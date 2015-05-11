@@ -2,7 +2,7 @@
 'use strict';
 var fs = require('fs');
 var path = require('path');
-function deepReaddir(dir, cb) {
+function deepReaddir(dir, cb, options) {
     var stats;
     if (dir || (typeof dir == 'string')) {
         try {
@@ -21,14 +21,14 @@ function deepReaddir(dir, cb) {
     if (cb && typeof cb == 'function') {
         var result = [];
         var promises = { quantity: 1 };
-        readAsync(dir, cb, result, promises);
+        readAsync(dir, cb, options, result, promises);
         return;
     }
     else {
-        return readSync(dir);
+        return readSync(dir, options);
     }
 }
-function readAsync(dir, cb, result, promises) {
+function readAsync(dir, cb, options, result, promises) {
     dir = dir.substr(dir.length - 1) !== path.sep ? dir + path.sep : dir;
     fs.readdir(dir, function (err, files) {
         promises.quantity--;
@@ -40,18 +40,26 @@ function readAsync(dir, cb, result, promises) {
             cb(result);
         }
         files.forEach(function (file) {
-            file = dir + file;
-            fs.stat(file, function (err, stats) {
+            var filepath = dir + file;
+            fs.stat(filepath, function (err, stats) {
                 promises.quantity--;
                 if (err) {
                     return;
                 }
                 if (stats.isDirectory()) {
                     promises.quantity++;
-                    readAsync(file, cb, result, promises);
+                    readAsync(filepath, cb, options, result, promises);
                 }
                 else {
-                    result.push(file);
+                    // Filters...
+                    if (options) {
+                        if (applyFilters(file, options)) {
+                            result.push(filepath);
+                        }
+                    }
+                    else {
+                        result.push(filepath);
+                    }
                 }
                 if (promises.quantity < 1) {
                     cb(result);
@@ -60,7 +68,21 @@ function readAsync(dir, cb, result, promises) {
         });
     });
 }
-function readSync(dir) {
+function applyFilters(file, options) {
+    if (options.extension != null && options.extension !== '') {
+        if (options.extension[0] != '.') {
+            options.extension = '.' + options.extension;
+        }
+        if (options.extension != path.extname(file)) {
+            return false;
+        }
+    }
+    if (!options.hidden && file[0] == '.') {
+        return false;
+    }
+    return true;
+}
+function readSync(dir, options) {
     var result = result || [];
     var contents = fs.readdirSync(dir);
     dir = dir.substr(dir.length - 1) !== path.sep ? dir + path.sep : dir;
@@ -68,7 +90,7 @@ function readSync(dir) {
         item = dir + item;
         var stats = fs.statSync(item);
         if (item !== dir && stats.isDirectory()) {
-            var recursiveContents = readSync(item);
+            var recursiveContents = readSync(item, options);
             result = result.concat(recursiveContents);
             return;
         }

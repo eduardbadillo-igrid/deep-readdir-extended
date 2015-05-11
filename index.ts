@@ -2,14 +2,22 @@
 
 'use strict';
 
+interface Options {
+	extension?: string;
+	hidden?: boolean;
+}
+
 import fs = require('fs');
 import path = require('path');
 
+function deepReaddir(dir: string, cb: Function, options: Options): void;
 function deepReaddir(dir: string, cb: Function): void;
+function deepReaddir(dir: string, options: Options): string[];
 function deepReaddir(dir: string): string[];
-function deepReaddir(dir, cb?): any {
+function deepReaddir(dir, cb?, options?) {
 
 	var stats;
+
 	if ( dir || (typeof dir == 'string') ) {
 		try {
 			stats = fs.statSync(dir);
@@ -26,14 +34,14 @@ function deepReaddir(dir, cb?): any {
 	if (cb && typeof cb == 'function') {
 		var result: string[] = [];
 		var promises: {quantity: number} = { quantity: 1 }
-		readAsync(dir, cb, result, promises);
+		readAsync(dir, cb, options, result, promises);
 		return;
 	} else {
-		return readSync(dir);
+		return readSync(dir, options);
 	}
 }
 
-function readAsync(dir: string, cb: Function, result: string[], promises: {quantity: number}){
+function readAsync(dir: string, cb: Function, options: Options, result: string[], promises: {quantity: number}){
 
 	dir = dir.substr(dir.length - 1) !== path.sep ? dir + path.sep : dir;
 
@@ -47,16 +55,23 @@ function readAsync(dir: string, cb: Function, result: string[], promises: {quant
 		}
 
 		files.forEach(function(file: string){
-			file = dir + file;
-			fs.stat(file, function(err: Error, stats: fs.Stats){
+			var filepath = dir + file;
+			fs.stat(filepath, function(err: Error, stats: fs.Stats){
 				promises.quantity--;
 				if (err) { return; }
 
 				if (stats.isDirectory()){
 					promises.quantity++;
-					readAsync(file, cb, result, promises);
+					readAsync(filepath, cb, options, result, promises);
 				} else {
-					result.push(file);
+					// Filters...
+					if (options) {
+						if (applyFilters(file, options)) {
+							result.push(filepath);
+						}
+					} else {
+						result.push(filepath);
+					}
 				}
 				if (promises.quantity < 1) {
 					cb(result);
@@ -66,7 +81,20 @@ function readAsync(dir: string, cb: Function, result: string[], promises: {quant
 	});
 }
 
-function readSync(dir: string){
+function applyFilters(file: string, options: Options): boolean {
+	if (options.extension != null && options.extension !== '') {
+		if (options.extension[0] != '.') { options.extension = '.' + options.extension; }
+		if (options.extension != path.extname(file)) {
+			return false;
+		}
+	}
+	if (!options.hidden && file[0] == '.') {
+		return false;
+	}
+	return true;
+}
+
+function readSync(dir: string, options: Options){
 
 	var result: string[] = result || [];
 	var contents: string[] = fs.readdirSync(dir);
@@ -76,7 +104,7 @@ function readSync(dir: string){
 		item = dir + item;
 		var stats: fs.Stats = fs.statSync(item);
 		if (item !== dir && stats.isDirectory()){
-			var recursiveContents: string[] = readSync(item);
+			var recursiveContents: string[] = readSync(item, options);
 			result = result.concat(recursiveContents);
 			return;
 		}

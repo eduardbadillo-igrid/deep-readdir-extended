@@ -60,4 +60,74 @@ describe('deep-readdir', function(){
 			}
 		});
 	});
+
+	it('should accept an optional options object', function(done){
+		rdr('test/mocks/onlyfiles/', function(result){
+			assert(Array.isArray(result));
+			done();
+		}, {});
+	});
+
+	it('should allow filtering by extension', function(done){
+		var promises = 3;
+
+		rdr('test/mocks/extensions/', function(result){
+			promises--;
+			assert(Array.isArray(result));
+			assert.equal(result.length, 2);
+			if (promises === 0) {
+				done();
+			}
+		}, {extension: 'html'});
+
+		rdr('test/mocks/extensions/', function(result){
+			promises--;
+			assert(Array.isArray(result));
+			assert.equal(result.length, 3);
+			if (promises === 0) {
+				done();
+			}
+		}, {extension: '.txt'});
+
+		rdr('test/mocks/extensions/', function(result){
+			promises--;
+			assert(Array.isArray(result));
+			assert.equal(result.length, 6);
+			if (promises === 0) {
+				done();
+			}
+		}, {extension: ''});
+	});
+
+	it('should allow filtering hidden files', function(done){
+		var promises = 3;
+
+		rdr('test/mocks/hidden/', function(result){
+			promises--;
+			assert(Array.isArray(result));
+			assert.equal(result.length, 4);
+			if (promises === 0) {
+				done();
+			}
+		}, {hidden: true});
+
+		rdr('test/mocks/hidden/', function(result){
+			promises--;
+			assert(Array.isArray(result));
+			assert.equal(result.length, 1);
+			if (promises === 0) {
+				done();
+			}
+		}, {hidden: false});
+
+		rdr('test/mocks/hidden/', function(result){
+			promises--;
+			assert(Array.isArray(result));
+			assert.equal(result.length, 1);
+			if (promises === 0) {
+				done();
+			}
+		}, {});
+	});
+
 });
