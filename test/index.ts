@@ -4,7 +4,7 @@
 
 'use strict';
 
-import rdr = require("../index");
+import rdr = require('../index');
 import assert = require('assert');
 
 var [deepReaddir, deepReaddirSync] = [rdr.deepReaddir, rdr.deepReaddirSync];

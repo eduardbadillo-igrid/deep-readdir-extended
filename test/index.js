@@ -2,7 +2,7 @@
 /// <reference path='../typescript-definitions/node.d.ts' />
 /* jshint mocha:true */
 'use strict';
-var rdr = require("../index");
+var rdr = require('../index');
 var assert = require('assert');
 var _a = [rdr.deepReaddir, rdr.deepReaddirSync], deepReaddir = _a[0], deepReaddirSync = _a[1];
 describe('deep-readdir', function () {
