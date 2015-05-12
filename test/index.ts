@@ -4,31 +4,33 @@
 
 'use strict';
 
-import rdr = require('../index');
+import rdr = require("../index");
 import assert = require('assert');
+
+var [deepReaddir, deepReaddirSync] = [rdr.deepReaddir, rdr.deepReaddirSync];
 
 describe('deep-readdir', function(){
 	it('should return an array', function(){
-		assert( Array.isArray( rdr('test/mocks/onlyfiles/') ) );
-		assert(Array.isArray(rdr('test/mocks/empty/')));
+		assert( Array.isArray( deepReaddirSync('test/mocks/onlyfiles/') ) );
+		assert(Array.isArray(deepReaddirSync('test/mocks/empty/')));
 
 	});
 
 	it('should throw an error if first argument is not a directory', function(){
-		assert.throws ( rdr );
-		assert.throws ( function(){ rdr('foo') } );
+		assert.throws ( deepReaddirSync );
+		assert.throws ( function(){ deepReaddirSync('foo') } );
 	});
 
 	it('should return a list of files in directory', function(){
-		assert.equal(rdr('test/mocks/onlyfiles/').length, 5);
-		assert.equal(rdr('test/mocks/onlyfiles').length, 5);
-		assert.equal(rdr('test/mocks/subs').length, 6);
+		assert.equal(deepReaddirSync('test/mocks/onlyfiles/').length, 5);
+		assert.equal(deepReaddirSync('test/mocks/onlyfiles').length, 5);
+		assert.equal(deepReaddirSync('test/mocks/subs').length, 6);
 	});
 
 	it('should call a callback (if provided) with results', function(done){
 		var promises = 4;
 
-		rdr('test/mocks/onlyfiles/', function(result){
+		deepReaddir('test/mocks/onlyfiles/', function(result){
 			promises--;
 			assert.equal(result.length, 5);
 			if (promises === 0) {
@@ -36,7 +38,7 @@ describe('deep-readdir', function(){
 			}
 		});
 
-		rdr('test/mocks/onlyfiles', function(result){
+		deepReaddir('test/mocks/onlyfiles', function(result){
 			promises--;
 			assert.equal(result.length, 5);
 			if (promises === 0) {
@@ -44,7 +46,7 @@ describe('deep-readdir', function(){
 			}
 		});
 
-		rdr('test/mocks/subs', function(result){
+		deepReaddir('test/mocks/subs', function(result){
 			promises--;
 			assert.equal(result.length, 6);
 			if (promises === 0) {
@@ -52,7 +54,7 @@ describe('deep-readdir', function(){
 			}
 		});
 
-		rdr('test/mocks/empty', function(result){
+		deepReaddir('test/mocks/empty', function(result){
 			promises--;
 			assert(Array.isArray(result));
 			if (promises === 0) {
@@ -62,7 +64,7 @@ describe('deep-readdir', function(){
 	});
 
 	it('should accept an optional options object', function(done){
-		rdr('test/mocks/onlyfiles/', function(result){
+		deepReaddir('test/mocks/onlyfiles/', function(result){
 			assert(Array.isArray(result));
 			done();
 		}, {});
@@ -71,7 +73,7 @@ describe('deep-readdir', function(){
 	it('should allow filtering by extension', function(done){
 		var promises = 3;
 
-		rdr('test/mocks/extensions/', function(result){
+		deepReaddir('test/mocks/extensions/', function(result){
 			promises--;
 			assert(Array.isArray(result));
 			assert.equal(result.length, 2);
@@ -80,7 +82,7 @@ describe('deep-readdir', function(){
 			}
 		}, {extension: 'html'});
 
-		rdr('test/mocks/extensions/', function(result){
+		deepReaddir('test/mocks/extensions/', function(result){
 			promises--;
 			assert(Array.isArray(result));
 			assert.equal(result.length, 3);
@@ -89,7 +91,7 @@ describe('deep-readdir', function(){
 			}
 		}, {extension: '.txt'});
 
-		rdr('test/mocks/extensions/', function(result){
+		deepReaddir('test/mocks/extensions/', function(result){
 			promises--;
 			assert(Array.isArray(result));
 			assert.equal(result.length, 6);
@@ -102,7 +104,7 @@ describe('deep-readdir', function(){
 	it('should allow filtering hidden files', function(done){
 		var promises = 3;
 
-		rdr('test/mocks/hidden/', function(result){
+		deepReaddir('test/mocks/hidden/', function(result){
 			promises--;
 			assert(Array.isArray(result));
 			assert.equal(result.length, 4);
@@ -111,7 +113,7 @@ describe('deep-readdir', function(){
 			}
 		}, {hidden: true});
 
-		rdr('test/mocks/hidden/', function(result){
+		deepReaddir('test/mocks/hidden/', function(result){
 			promises--;
 			assert(Array.isArray(result));
 			assert.equal(result.length, 1);
@@ -120,7 +122,7 @@ describe('deep-readdir', function(){
 			}
 		}, {hidden: false});
 
-		rdr('test/mocks/hidden/', function(result){
+		deepReaddir('test/mocks/hidden/', function(result){
 			promises--;
 			assert(Array.isArray(result));
 			assert.equal(result.length, 1);
