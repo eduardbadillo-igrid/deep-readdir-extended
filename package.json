@@ -1,11 +1,11 @@
 {
-  "name": "deep-readdir",
-  "version": "0.2.0",
+  "name": "deep-readdir-extended",
+  "version": "0.1.0",
   "description": "List files in directory recursively",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "http://github.com/fedemp/deep-readdir/"
+    "url": "https://github.com/eduardbadillo-igrid/deep-readdir-extended/"
   },
   "keywords": [
     "readdir",
@@ -18,11 +18,11 @@
     "pretest": "npm run build && npm run jshint",
     "test": "mocha"
   },
-  "author": "fedemp",
+  "author": "eduardbadillo-igrid",
   "license": "MIT",
   "devDependencies": {
     "jshint": "^2.7.0",
     "mocha": "^2.2.4",
-    "typescript": "^1.5.0-beta"
+    "typescript": "1.5.0-beta"
   }
 }
