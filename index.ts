@@ -5,6 +5,7 @@
 interface Options {
 	extension?: string;
 	hidden?: boolean;
+	fullfilePath?: boolean;
 }
 
 interface Promise {
@@ -54,10 +55,10 @@ function async(dir: string, cb: Function, options: Options, result: string[], pr
 					// Filters...
 					if (options) {
 						if (applyFilters(file, options)) {
-							result.push(filepath);
+							result.push(options.fullfilePath ? filepath : file);
 						}
 					} else {
-						result.push(filepath);
+						result.push(options.fullfilePath ? filepath : file);
 					}
 				}
 				if (promises.q < 1) {
@@ -75,7 +76,7 @@ function deepReaddirSync (dir: string, options?: Options): string[] {
 	dir = dir.substr(dir.length - 1) !== path.sep ? dir + path.sep : dir;
 
 	contents.forEach(function(item: string){
-		item = dir + item;
+		item = options.fullfilePath ? dir + item : item;
 		var stats: fs.Stats = fs.statSync(item);
 		if (item !== dir && stats.isDirectory()){
 			var recursiveContents: string[] = deepReaddirSync(item, options);

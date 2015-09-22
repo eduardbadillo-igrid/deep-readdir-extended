@@ -38,11 +38,11 @@ function async(dir, cb, options, result, promises) {
                     // Filters...
                     if (options) {
                         if (applyFilters(file, options)) {
-                            result.push(filepath);
+                            result.push(options.fullfilePath ? filepath : file);
                         }
                     }
                     else {
-                        result.push(filepath);
+                        result.push(options.fullfilePath ? filepath : file);
                     }
                 }
                 if (promises.q < 1) {
@@ -57,7 +57,7 @@ function deepReaddirSync(dir, options) {
     var contents = fs.readdirSync(dir);
     dir = dir.substr(dir.length - 1) !== path.sep ? dir + path.sep : dir;
     contents.forEach(function (item) {
-        item = dir + item;
+        item = options.fullfilePath ? dir + item : item;
         var stats = fs.statSync(item);
         if (item !== dir && stats.isDirectory()) {
             var recursiveContents = deepReaddirSync(item, options);
