@@ -38,11 +38,11 @@ function async(dir, cb, options, result, promises) {
                     // Filters...
                     if (options) {
                         if (applyFilters(file, options)) {
-                            result.push(options.fullfilePath ? filepath : file);
+                            result.push(fileObject(options.fullfilePath ? filepath : file, stats));
                         }
                     }
                     else {
-                        result.push(options.fullfilePath ? filepath : file);
+                        result.push(fileObject(options.fullfilePath ? filepath : file, stats));
                     }
                 }
                 if (promises.q < 1) {
@@ -64,7 +64,7 @@ function deepReaddirSync(dir, options) {
             result = result.concat(recursiveContents);
             return;
         }
-        result.push(item);
+        result.push(fileObject(item, stats));
     });
     return result;
 }
@@ -85,6 +85,13 @@ function isDir(dir) {
         throw new Error('Missing dir argument');
     }
     return true;
+}
+function fileObject(file, stats) {
+    return {
+        file: file,
+        date: stats.ctime,
+        size: stats.size
+    };
 }
 function applyFilters(file, options) {
     if (options.extension != null && options.extension !== '') {

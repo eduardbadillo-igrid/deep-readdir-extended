@@ -23,13 +23,13 @@ function deepReaddir (dir: string, cb: Function, options?: Options): void {
 
 	isDir(dir);
 
-	var result: string[] = [];
+	var result: Object[] = [];
 	var promises: Promise = { q: 1 }
 	async(dir, cb, options, result, promises);
 	return;
 }
 
-function async(dir: string, cb: Function, options: Options, result: string[], promises: Promise){
+function async(dir: string, cb: Function, options: Options, result: Object[], promises: Promise){
 
 	dir = dir.substr(dir.length - 1) !== path.sep ? dir + path.sep : dir;
 
@@ -55,10 +55,10 @@ function async(dir: string, cb: Function, options: Options, result: string[], pr
 					// Filters...
 					if (options) {
 						if (applyFilters(file, options)) {
-							result.push(options.fullfilePath ? filepath : file);
+							result.push(fileObject(options.fullfilePath ? filepath : file, stats));
 						}
 					} else {
-						result.push(options.fullfilePath ? filepath : file);
+						result.push(fileObject(options.fullfilePath ? filepath : file, stats));
 					}
 				}
 				if (promises.q < 1) {
@@ -69,9 +69,9 @@ function async(dir: string, cb: Function, options: Options, result: string[], pr
 	});
 }
 
-function deepReaddirSync (dir: string, options?: Options): string[] {
+function deepReaddirSync (dir: string, options?: Options): Object[] {
 
-	var result: string[] = result || [];
+	var result: Object[] = result || [];
 	var contents: string[] = fs.readdirSync(dir);
 	dir = dir.substr(dir.length - 1) !== path.sep ? dir + path.sep : dir;
 
@@ -79,15 +79,14 @@ function deepReaddirSync (dir: string, options?: Options): string[] {
 		item = options.fullfilePath ? dir + item : item;
 		var stats: fs.Stats = fs.statSync(item);
 		if (item !== dir && stats.isDirectory()){
-			var recursiveContents: string[] = deepReaddirSync(item, options);
+			var recursiveContents: Object[] = deepReaddirSync(item, options);
 			result = result.concat(recursiveContents);
 			return;
 		}
-		result.push( item );
+		result.push(fileObject(item, stats));
 	});
 
 	return result;
-
 }
 
 function isDir(dir: string):boolean {
@@ -105,6 +104,14 @@ function isDir(dir: string):boolean {
 		throw new Error('Missing dir argument');
 	}
 	return true;
+}
+
+function fileObject(file: string, stats: fs.Stats): Object {
+	return {
+		file: file,
+		date: stats.ctime,
+		size: stats.size
+	}
 }
 
 function applyFilters(file: string, options: Options): boolean {
