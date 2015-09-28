@@ -1,6 +1,6 @@
 # deep-readdir
 
-[![Build Status](https://travis-ci.org/fedemp/deep-readdir.svg?branch=master)](https://travis-ci.org/fedemp/deep-readdir)
+[![Build Status](https://travis-ci.org/eduardbadillo-igrid/deep-readdir-extended.svg?branch=master)](https://travis-ci.org/eduardbadillo-igrid/deep-readdir-extended)
 
 NodeJS module to list files in a directory and its subdirectories (i.e. recursively)
 
