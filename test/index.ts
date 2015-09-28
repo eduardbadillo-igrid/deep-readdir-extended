@@ -11,9 +11,8 @@ var [deepReaddir, deepReaddirSync] = [rdr.deepReaddir, rdr.deepReaddirSync];
 
 describe('deep-readdir', function(){
 	it('should return an array', function(){
-		assert( Array.isArray( deepReaddirSync('test/mocks/onlyfiles/') ) );
+		assert(Array.isArray(deepReaddirSync('test/mocks/onlyfiles/')));
 		assert(Array.isArray(deepReaddirSync('test/mocks/empty/')));
-
 	});
 
 	it('should throw an error if first argument is not a directory', function(){
