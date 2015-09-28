@@ -55,10 +55,20 @@ function async(dir: string, cb: Function, options: Options, result: Object[], pr
 					// Filters...
 					if (options) {
 						if (applyFilters(file, options)) {
-							result.push(fileObject(options.fullfilePath ? filepath : file, stats));
+							if (!!options && !!options.fullfilePath) {
+								result.push(fileObject(options.fullfilePath ? filepath : file, stats));
+							}
+							else {
+								result.push(fileObject(file, stats));
+							}
 						}
 					} else {
-						result.push(fileObject(options.fullfilePath ? filepath : file, stats));
+						if (!!options && !!options.fullfilePath) {
+							result.push(fileObject(options.fullfilePath ? filepath : file, stats));
+						}
+						else {
+							result.push(fileObject(file, stats));
+						}
 					}
 				}
 				if (promises.q < 1) {
@@ -75,13 +85,16 @@ function deepReaddirSync (dir: string, options?: Options): Object[] {
 	var contents: string[] = fs.readdirSync(dir);
 	dir = dir.substr(dir.length - 1) !== path.sep ? dir + path.sep : dir;
 
-	contents.forEach(function(item: string){
-		item = options.fullfilePath ? dir + item : item;
-		var stats: fs.Stats = fs.statSync(item);
-		if (item !== dir && stats.isDirectory()){
-			var recursiveContents: Object[] = deepReaddirSync(item, options);
+	contents.forEach(function(item: string) {
+		var newItem = dir + item;
+		var stats: fs.Stats = fs.statSync(newItem);
+		if (newItem !== dir && stats.isDirectory()){
+			var recursiveContents: Object[] = deepReaddirSync(newItem, options);
 			result = result.concat(recursiveContents);
 			return;
+		}
+		if (!!options && !!options.fullfilePath) {
+			item = options.fullfilePath ? newItem : item;
 		}
 		result.push(fileObject(item, stats));
 	});
