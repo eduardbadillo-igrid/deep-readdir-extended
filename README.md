@@ -7,16 +7,16 @@ NodeJS module to list files in a directory and its subdirectories (i.e. recursiv
 ## Install
 
 ````bash
-$ npm install --save deep-readdir
+$ npm install --save deep-readdir-extended
 ````
 
 ## How to use
 
-`deep-readdir` provides two functions: one that works asynchronous and other that is synchronous (i.e. non-blocking and blocking respectively).
+`deep-readdir-extended` provides two functions: one that works asynchronous and other that is synchronous (i.e. non-blocking and blocking respectively).
 
 ````js
-var deepReaddir = require('deep-readdir').deepReaddir; // async
-var deepReaddirSync = require('deep-readdir').deepReaddirSync; // sync
+var deepReaddir = require('deep-readdir-extended').deepReaddir; // async
+var deepReaddirSync = require('deep-readdir-extended').deepReaddirSync; // sync
 ````
 
 ### async
@@ -33,7 +33,7 @@ For the async version, the first parameter is a `string` reading the path of a d
 declare function deepReaddirSync(dir: string, options?: Options): string[];
 ````
 
-For the sync version, the first parameter is a `string` reading the path of a directory. The second parameter is an optional object with options. This function returns an array of strings, each one being the path of a file.
+For the sync version, the first parameter is a `string` reading the path of a directory. The second parameter is an optional object with options. This function returns an array of object, each one containing the path of a file, the size and ctime.
 
 ### options
 
@@ -41,6 +41,7 @@ For the sync version, the first parameter is a `string` reading the path of a di
 interface Options {
 	extension?: string;
 	hidden?: boolean;
+	fullfilePath?: boolean;
 }
 ````
 
@@ -48,6 +49,7 @@ The optional `options` parameter support the following properties:
 
 * `extension`: Only list files that match the given extension, e.g. `.txt`.
 * `hidden`: If `true`, hidden files will be added. This only works for files that start with `.`.
+* `fullfilePath`: If `true`, this will return the full relative filePath, otherwise will only return the name of the file.
 
 ## License
 
