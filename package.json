@@ -1,6 +1,6 @@
 {
   "name": "deep-readdir-extended",
-  "version": "0.2.0",
+  "version": "1.1.0",
   "description": "List files in directory recursively",
   "main": "index.js",
   "repository": {
